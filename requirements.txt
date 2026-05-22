@@ -1,0 +1,12 @@
+pandas==2.2.0
+numpy==1.26.4
+scikit-learn==1.4.0
+scipy==1.12.0
+yfinance==0.2.37
+requests==2.31.0
+beautifulsoup4==4.12.3
+jieba==0.42.1
+lxml==5.1.0
+openpyxl==3.1.2
+TA-Lib==0.4.28
+optuna==3.6.1
