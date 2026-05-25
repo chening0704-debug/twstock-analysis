@@ -1,4 +1,4 @@
-# engine/technical.py — 技術面計分（pandas-ta 版本）
+# engine/technical.py — 技術面計分（ta 套件版本，相容 Python 3.11）
 import logging
 import numpy as np
 import pandas as pd
@@ -20,7 +20,10 @@ def compute_technical_score(stock_id: str) -> float:
         return 50.0
 
     try:
-        import pandas_ta as ta
+        import ta
+        from ta.trend import SMAIndicator, MACD
+        from ta.momentum import StochasticOscillator, RSIIndicator
+        from ta.volatility import BollingerBands
 
         c  = df["close"].astype(float)
         h  = df["high"].astype(float)
@@ -29,61 +32,51 @@ def compute_technical_score(stock_id: str) -> float:
         tr = df["turnover_rate"].astype(float)
 
         score = 0.0
+        cur   = float(c.iloc[-1])
 
         # 均線多頭排列
-        ma5   = ta.sma(c, length=5).iloc[-1]
-        ma20  = ta.sma(c, length=20).iloc[-1]
-        ma60  = ta.sma(c, length=60).iloc[-1]
-        ma120 = ta.sma(c, length=120).iloc[-1] if len(c) >= 120 else ma60
-        ma240 = ta.sma(c, length=240).iloc[-1] if len(c) >= 240 else ma120
-        cur   = float(c.iloc[-1])
+        ma5   = float(SMAIndicator(c, window=5).sma_indicator().iloc[-1])
+        ma20  = float(SMAIndicator(c, window=20).sma_indicator().iloc[-1])
+        ma60  = float(SMAIndicator(c, window=60).sma_indicator().iloc[-1])
+        ma120 = float(SMAIndicator(c, window=min(120, len(c))).sma_indicator().iloc[-1])
+        ma240 = float(SMAIndicator(c, window=min(240, len(c))).sma_indicator().iloc[-1])
 
         if cur > ma5 > ma20 > ma60 > ma120 > ma240:
             score += 20
         elif cur < ma60:
             score -= 5
 
-        # KD 指標（Stochastic）
-        stoch = ta.stoch(h, lo, c, k=9, d=3)
-        if stoch is not None and not stoch.empty:
-            k_col = [col for col in stoch.columns if 'STOCHk' in col]
-            d_col = [col for col in stoch.columns if 'STOCHd' in col]
-            if k_col and d_col:
-                k_val = float(stoch[k_col[0]].iloc[-1])
-                d_val = float(stoch[d_col[0]].iloc[-1])
-                if k_val < 20 and k_val > d_val:
-                    score += 15
-                elif k_val > 80 and k_val < d_val:
-                    score -= 10
+        # KD 指標
+        stoch = StochasticOscillator(
+            high=h, low=lo, close=c, window=9, smooth_window=3
+        )
+        k_val = float(stoch.stoch().iloc[-1])
+        d_val = float(stoch.stoch_signal().iloc[-1])
+        if k_val < 20 and k_val > d_val:
+            score += 15
+        elif k_val > 80 and k_val < d_val:
+            score -= 10
 
         # MACD
-        macd_df = ta.macd(c)
-        if macd_df is not None and not macd_df.empty:
-            hist_col = [col for col in macd_df.columns if 'MACDh' in col]
-            if hist_col:
-                hist = macd_df[hist_col[0]]
-                if len(hist) >= 2:
-                    if float(hist.iloc[-1]) > 0 and float(hist.iloc[-2]) < 0:
-                        score += 12
+        macd_ind  = MACD(close=c)
+        hist_now  = float(macd_ind.macd_diff().iloc[-1])
+        hist_prev = float(macd_ind.macd_diff().iloc[-2])
+        if hist_now > 0 and hist_prev < 0:
+            score += 12
 
         # RSI
-        rsi_series = ta.rsi(c, length=14)
-        if rsi_series is not None and not rsi_series.empty:
-            rsi = float(rsi_series.iloc[-1])
-            if 50 <= rsi <= 70:
-                score += 8
-            elif rsi < 40:
-                score -= 15
+        rsi = float(RSIIndicator(close=c, window=14).rsi().iloc[-1])
+        if 50 <= rsi <= 70:
+            score += 8
+        elif rsi < 40:
+            score -= 15
 
         # 布林通道
-        bbands = ta.bbands(c, length=20)
-        if bbands is not None and not bbands.empty:
-            upper_col = [col for col in bbands.columns if 'BBU' in col]
-            if upper_col:
-                upper = float(bbands[upper_col[0]].iloc[-1])
-                v_arr = v.values
-                if cur > upper and v_arr[-1] > np.mean(v_arr[-5:]) * 1.3:
-                    score += 10
+        bb    = BollingerBands(close=c, window=20)
+        upper = float(bb.bollinger_hband().iloc[-1])
+        v_arr = v.values
+        if cur > upper and v_arr[-1] > np.mean(v_arr[-5:]) * 1.3:
+            score += 10
 
         # 週轉率量增
         tr_arr = tr.values
