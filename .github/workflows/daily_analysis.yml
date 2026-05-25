@@ -2,10 +2,8 @@ name: 台股每日自動分析
 
 on:
   schedule:
-    # UTC 15:30 = 台灣時間 23:30（週一到週五）
     - cron: '30 15 * * 1-5'
   workflow_dispatch:
-    # 允許手動觸發（測試用）
 
 jobs:
   analyze:
@@ -13,38 +11,37 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      # 1. 取出倉庫程式碼
       - name: 取出程式碼
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 
-      # 2. 設定 Python 環境
       - name: 設定 Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      # 3. 安裝 TA-Lib C 函式庫
       - name: 安裝 TA-Lib 系統套件
         run: |
-          wget -q https://github.com/ta-lib/ta-lib/releases/download/v0.4.0/ta-lib-0.4.0-src.tar.gz
+          sudo apt-get update -q
+          sudo apt-get install -y build-essential wget
+          wget -q https://sourceforge.net/projects/ta-lib/files/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz
           tar -xzf ta-lib-0.4.0-src.tar.gz
           cd ta-lib
           ./configure --prefix=/usr
-          make -j2
+          make -j$(nproc)
           sudo make install
+          sudo ldconfig
           cd ..
+          rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
-      # 4. 安裝 Python 套件
       - name: 安裝 Python 套件
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 5. 還原 SQLite 資料庫快取（跨日保留資料）
       - name: 還原 SQLite 快取
         uses: actions/cache@v4
         with:
@@ -53,7 +50,6 @@ jobs:
           restore-keys: |
             sqlite-${{ runner.os }}-
 
-      # 6. 還原 RF 模型快取（每週重訓，其餘直接讀取）
       - name: 還原 RF 模型快取
         uses: actions/cache@v4
         with:
@@ -62,7 +58,6 @@ jobs:
           restore-keys: |
             rf-model-${{ runner.os }}-
 
-      # 7. 執行主分析
       - name: 執行分析
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
@@ -71,7 +66,6 @@ jobs:
           EMAIL_TARGET:  ${{ secrets.EMAIL_TARGET }}
         run: python main.py
 
-      # 8. 回寫結果到倉庫
       - name: 提交分析結果
         if: always()
         run: |
@@ -82,10 +76,9 @@ jobs:
             git commit -m "📊 日報 $(date '+%Y-%m-%d')"
           git push || true
 
-      # 9. 部署報告到 GitHub Pages
       - name: 部署到 GitHub Pages
         if: success()
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir:  ./reports
