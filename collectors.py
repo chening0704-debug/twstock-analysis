@@ -1,4 +1,4 @@
-# collectors.py — 七路資料擷取（含開市守衛）
+# collectors.py — 七路資料擷取（完整修正版）
 import os
 import requests
 import pandas as pd
@@ -12,7 +12,6 @@ FINMIND_TOKEN = os.environ.get("FINMIND_TOKEN", "")
 
 
 def _parse_roc_date(s: str) -> str:
-    """民國年 '1130520' → '2024-05-20'"""
     s = str(s).strip().replace("/", "")
     if len(s) == 7 and s.isdigit():
         return f"{int(s[:3])+1911}-{s[3:5]}-{s[5:7]}"
@@ -44,10 +43,12 @@ def collect_price_volume() -> int:
         return 0
 
     if not raw or len(raw) == 0:
-        logging.warning("[price_volume] TWSE 回傳空資料，今日未開市")
+        logging.warning("[price_volume] TWSE 回傳空資料，今日未開市或資料未更新")
         return 0
 
     df = pd.DataFrame(raw)
+    logging.info(f"[price_volume] 原始欄位：{list(df.columns)}")
+
     col_map = {
         "Code":          "stock_id",
         "Name":          "stock_name",
@@ -58,10 +59,25 @@ def collect_price_volume() -> int:
         "ClosingPrice":  "close",
         "TradeVolume":   "volume",
         "TurnoverRatio": "turnover_rate",
+        "股票代號":       "stock_id",
+        "股票名稱":       "stock_name",
+        "開盤價":         "open",
+        "最高價":         "high",
+        "最低價":         "low",
+        "收盤價":         "close",
+        "成交股數":       "volume",
+        "週轉率":         "turnover_rate",
     }
     df = df.rename(columns={
         k: v for k, v in col_map.items() if k in df.columns
     })
+
+    if "stock_id" not in df.columns:
+        logging.error(
+            f"[price_volume] 缺少 stock_id，"
+            f"現有欄位：{list(df.columns)}"
+        )
+        return 0
 
     for col in ["open","high","low","close","volume","turnover_rate"]:
         if col in df.columns:
@@ -91,6 +107,11 @@ def collect_price_volume() -> int:
     keep = ["stock_id","stock_name","date","open","high",
             "low","close","volume","turnover_rate","market"]
     df = df[[c for c in keep if c in df.columns]]
+
+    if df.empty:
+        logging.warning("[price_volume] 過濾後無有效資料")
+        return 0
+
     upsert("daily_price", df, pk=["stock_id","date"])
 
     u = df[["stock_id","stock_name"]].copy()
@@ -116,6 +137,8 @@ def collect_institutional() -> int:
         return 0
 
     df = pd.DataFrame(raw)
+    logging.info(f"[institutional] 原始欄位：{list(df.columns)}")
+
     col_map = {
         "Code":                            "stock_id",
         "Date":                            "date",
@@ -123,10 +146,22 @@ def collect_institutional() -> int:
         "Investment_Trust_Net_Buy_or_Sell":"trust_net",
         "Dealer_Net_Buy_or_Sell":          "dealer_net",
         "Total_Net_Buy_or_Sell":           "total_net",
+        "股票代號":                         "stock_id",
+        "外陸資買賣超股數(不含外資自營商)":   "foreign_net",
+        "投信買賣超股數":                    "trust_net",
+        "自營商買賣超股數":                  "dealer_net",
     }
     df = df.rename(columns={
         k: v for k, v in col_map.items() if k in df.columns
     })
+
+    if "stock_id" not in df.columns:
+        logging.error(
+            f"[institutional] 缺少 stock_id，"
+            f"欄位：{list(df.columns)}"
+        )
+        return 0
+
     for col in ["foreign_net","trust_net","dealer_net","total_net"]:
         if col in df.columns:
             df[col] = (
@@ -140,10 +175,18 @@ def collect_institutional() -> int:
     active = _get_active_ids(today)
     if active:
         df = df[df["stock_id"].isin(active)]
+
     if "date" in df.columns:
         df["date"] = df["date"].apply(_parse_roc_date)
     else:
         df["date"] = today
+
+    keep = ["stock_id","date","foreign_net",
+            "trust_net","dealer_net","total_net"]
+    df = df[[c for c in keep if c in df.columns]]
+
+    if df.empty:
+        return 0
 
     upsert("institutional_netbuy", df, pk=["stock_id","date"])
     logging.info(f"[institutional] 寫入 {len(df)} 筆")
@@ -167,6 +210,8 @@ def collect_margin() -> int:
         return 0
 
     df = pd.DataFrame(raw)
+    logging.info(f"[margin] 原始欄位：{list(df.columns)}")
+
     col_map = {
         "Stock_id":              "stock_id",
         "Date":                  "date",
@@ -175,10 +220,24 @@ def collect_margin() -> int:
         "MarginPurchaseBalance": "margin_balance",
         "ShortSaleBalance":      "short_balance",
         "OffsetLoanAndShort":    "short_sell_borrow",
+        "股票代號":               "stock_id",
+        "融資買進":               "margin_buy",
+        "融資賣出":               "margin_sell",
+        "融資餘額":               "margin_balance",
+        "融券餘額":               "short_balance",
+        "借券賣出餘額":            "short_sell_borrow",
     }
     df = df.rename(columns={
         k: v for k, v in col_map.items() if k in df.columns
     })
+
+    if "stock_id" not in df.columns:
+        logging.error(
+            f"[margin] 缺少 stock_id，"
+            f"欄位：{list(df.columns)}"
+        )
+        return 0
+
     for col in ["margin_buy","margin_sell","margin_balance",
                 "short_balance","short_sell_borrow"]:
         if col in df.columns:
@@ -193,10 +252,18 @@ def collect_margin() -> int:
     active = _get_active_ids(today)
     if active:
         df = df[df["stock_id"].isin(active)]
+
     if "date" in df.columns:
         df["date"] = df["date"].apply(_parse_roc_date)
     else:
         df["date"] = today
+
+    keep = ["stock_id","date","margin_buy","margin_sell",
+            "margin_balance","short_balance","short_sell_borrow"]
+    df = df[[c for c in keep if c in df.columns]]
+
+    if df.empty:
+        return 0
 
     upsert("margin_balance", df, pk=["stock_id","date"])
     logging.info(f"[margin] 寫入 {len(df)} 筆")
@@ -208,7 +275,7 @@ def collect_chip_broker() -> int:
     if not FINMIND_TOKEN:
         logging.warning("[chip_broker] 無 FINMIND_TOKEN，跳過")
         return 0
-    today = pd.Timestamp.today().strftime("%Y-%m-%d")
+    today  = pd.Timestamp.today().strftime("%Y-%m-%d")
     params = {
         "dataset":    "TaiwanStockShareholding",
         "token":      FINMIND_TOKEN,
@@ -218,8 +285,9 @@ def collect_chip_broker() -> int:
         r    = requests.get(FINMIND, params=params, timeout=60)
         data = r.json().get("data", [])
         if data:
-            upsert("broker_chip", pd.DataFrame(data),
-                   pk=["stock_id","date","broker_id"])
+            df = pd.DataFrame(data)
+            if "stock_id" in df.columns:
+                upsert("broker_chip", df, pk=["stock_id","date"])
         time.sleep(2)
         logging.info(f"[chip_broker] 寫入 {len(data)} 筆")
         return len(data)
@@ -251,9 +319,12 @@ def collect_financials() -> int:
         try:
             r  = requests.get(FINMIND, params=params, timeout=60)
             df = pd.DataFrame(r.json().get("data", []))
-            if not df.empty:
+            if not df.empty and "stock_id" in df.columns:
                 upsert(table, df, pk=pk)
                 total += len(df)
+                logging.info(
+                    f"[financials] {dataset} 寫入 {len(df)} 筆"
+                )
             time.sleep(2)
         except Exception as e:
             logging.error(f"[financials] {dataset} 失敗：{e}")
@@ -263,44 +334,81 @@ def collect_financials() -> int:
 
 def collect_macro() -> int:
     logging.info("擷取：總經指標")
-    import yfinance as yf
+    try:
+        import yfinance as yf
+        import time as _time
 
-    def safe_last(ticker):
-        try:
-            df = yf.download(ticker, period="5d", progress=False)
-            return float(df["Close"].dropna().iloc[-1]) if not df.empty else None
-        except Exception:
+        def safe_fetch(ticker: str):
+            for period in ["5d", "1mo"]:
+                try:
+                    tk   = yf.Ticker(ticker)
+                    hist = tk.history(
+                        period=period, auto_adjust=True
+                    )
+                    if not hist.empty:
+                        close = hist["Close"].dropna()
+                        if len(close) >= 1:
+                            return close
+                except Exception:
+                    pass
+                _time.sleep(1)
             return None
 
-    def safe_pct(ticker):
+        vix_data = safe_fetch("^VIX")
+        vix      = float(vix_data.iloc[-1]) \
+                   if vix_data is not None else None
+
+        usd_data = safe_fetch("USDTWD=X")
+        usd_twd  = float(usd_data.iloc[-1]) \
+                   if usd_data is not None else None
+
+        sox_data = safe_fetch("^SOX")
+        if sox_data is not None and len(sox_data) >= 2:
+            sox_chg = float(
+                (sox_data.iloc[-1]/sox_data.iloc[-2]-1)*100
+            )
+        else:
+            sox_chg = 0.0
+
+        nvda_data = safe_fetch("NVDA")
+        if nvda_data is not None and len(nvda_data) >= 2:
+            nvda_chg = float(
+                (nvda_data.iloc[-1]/nvda_data.iloc[-2]-1)*100
+            )
+        else:
+            nvda_chg = 0.0
+
+        row = {
+            "date":         pd.Timestamp.today().strftime("%Y-%m-%d"),
+            "vix":          round(vix     or 20.0, 2),
+            "usd_twd":      round(usd_twd or 32.0, 4),
+            "sox_chg_pct":  round(sox_chg,          2),
+            "nvda_chg_pct": round(nvda_chg,          2),
+        }
+        upsert("macro_daily", pd.DataFrame([row]), pk=["date"])
+        logging.info(
+            f"[macro] VIX={row['vix']} "
+            f"USD/TWD={row['usd_twd']} "
+            f"SOX={row['sox_chg_pct']:+.2f}% "
+            f"NVDA={row['nvda_chg_pct']:+.2f}%"
+        )
+        return 1
+
+    except Exception as e:
+        logging.error(f"[macro] 嚴重錯誤：{e}")
         try:
-            df = yf.download(ticker, period="5d", progress=False)
-            c  = df["Close"].dropna()
-            return float((c.iloc[-1]/c.iloc[-2]-1)*100) if len(c)>=2 else 0.0
+            row = {
+                "date":         pd.Timestamp.today().strftime("%Y-%m-%d"),
+                "vix":          20.0,
+                "usd_twd":      32.0,
+                "sox_chg_pct":  0.0,
+                "nvda_chg_pct": 0.0,
+            }
+            upsert("macro_daily", pd.DataFrame([row]), pk=["date"])
+            logging.warning("[macro] 使用預設值繼續執行")
         except Exception:
-            return 0.0
-
-    vix      = safe_last("^VIX")
-    usd_twd  = safe_last("USDTWD=X")
-    sox_chg  = safe_pct("^SOX")
-    nvda_chg = safe_pct("NVDA")
-
-    if vix is None and usd_twd is None:
-        logging.warning("[macro] 總經資料不可用，跳過")
+            pass
         return 0
-
-    row = {
-        "date":         pd.Timestamp.today().strftime("%Y-%m-%d"),
-        "vix":          round(vix or 20.0, 2),
-        "usd_twd":      round(usd_twd or 32.0, 4),
-        "sox_chg_pct":  round(sox_chg, 2),
-        "nvda_chg_pct": round(nvda_chg, 2),
-    }
-    upsert("macro_daily", pd.DataFrame([row]), pk=["date"])
-    logging.info(
-        f"[macro] VIX={row['vix']} USD/TWD={row['usd_twd']}"
-    )
-    return 1
 
 
 def collect_announcements() -> int:
@@ -323,7 +431,7 @@ def collect_announcements() -> int:
                     "stock_name":    cols[1].text.strip(),
                     "title":         cols[2].text.strip(),
                     "announce_time": cols[3].text.strip(),
-                    "date":          pd.Timestamp.today().strftime("%Y-%m-%d"),
+                    "date": pd.Timestamp.today().strftime("%Y-%m-%d"),
                 })
         if data:
             upsert("announcements", pd.DataFrame(data),
