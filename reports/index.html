@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="3600">
+<title>台股分析系統｜初始化中</title>
+<style>
+  body{font-family:Arial,sans-serif;display:flex;
+        align-items:center;justify-content:center;
+        min-height:100vh;margin:0;background:#f5f7fa}
+  .card{background:#fff;border-radius:16px;
+         padding:48px 40px;text-align:center;
+         box-shadow:0 4px 20px rgba(0,0,0,.08);
+         max-width:480px;width:90%}
+  h1{color:#1F3864;font-size:22px;margin-bottom:8px}
+  p{color:#666;font-size:14px;line-height:1.6;margin:8px 0}
+  .progress-wrap{background:#eee;border-radius:8px;
+                  height:14px;margin:20px 0}
+  .progress-bar{background:#2E86C1;height:14px;
+                 border-radius:8px;width:20%;
+                 transition:width 0.5s}
+  .day-badge{display:inline-block;background:#EBF5FB;
+              color:#1A5276;font-size:32px;font-weight:700;
+              padding:14px 28px;border-radius:12px;margin:16px 0}
+  .note{color:#999;font-size:12px;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>📊 台股智能分析系統</h1>
+  <p>系統正在累積歷史資料<br>累積滿 5 個交易日後自動開始推薦</p>
+  <div class="day-badge">第 1 天 / 5 天</div>
+  <div class="progress-wrap">
+    <div class="progress-bar"></div>
+  </div>
+  <p>資料完整度 20%</p>
+  <p class="note">每日 23:30 自動執行<br>此頁面每小時自動更新</p>
+</div>
+</body>
+</html>
