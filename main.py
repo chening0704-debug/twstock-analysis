@@ -1,8 +1,8 @@
-# main.py — GitHub Actions 主入口
+# main.py — GitHub Actions 主入口（完整修正版）
 import os
 import sys
 import logging
-from datetime import date
+import datetime
 from pathlib import Path
 
 # 建立必要目錄
@@ -30,17 +30,37 @@ def main():
     init_db()
     logging.info("SQLite 初始化完成")
 
-    # Step 2：開市判斷（三層驗證）
-    from market_calendar import MarketCalendarGuard
-    guard = MarketCalendarGuard()
-    if not guard.is_trading_day():
-        logging.info("今日台股休市，系統結束")
+    # Step 2：台灣時區開市判斷
+    tw_tz    = datetime.timezone(datetime.timedelta(hours=8))
+    now_tw   = datetime.datetime.now(tw_tz)
+    today_tw = now_tw.date()
+    weekday  = today_tw.weekday()
+    weekday_name = ["一","二","三","四","五","六","日"][weekday]
+
+    logging.info(
+        f"台灣現在時間：{now_tw.strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+    logging.info(f"今天星期{weekday_name}")
+
+    # 週六日直接跳過
+    if weekday >= 5:
+        logging.info(f"今日為週{weekday_name}，系統不執行")
         Path("reports/skip.txt").write_text(
-            f"{date.today()} 休市，系統不執行"
+            f"{today_tw} 週末休市"
         )
         sys.exit(0)
 
-    logging.info("今日開市，開始執行")
+    # 平日確認 TWSE 開市
+    from market_calendar import MarketCalendarGuard
+    guard = MarketCalendarGuard()
+    if not guard.is_trading_day(today_tw):
+        logging.info(f"今日 {today_tw} 為國定假日，系統不執行")
+        Path("reports/skip.txt").write_text(
+            f"{today_tw} 國定假日休市"
+        )
+        sys.exit(0)
+
+    logging.info(f"今日 {today_tw} 台股開市，開始執行")
 
     # Step 3：讀取 Excel 庫存
     from portfolio_excel import (
@@ -76,15 +96,33 @@ def main():
         for name, f in tasks.items():
             try:
                 counts[name] = f.result()
-                logging.info(f"  [{name}] 完成 {counts[name]} 筆")
+                logging.info(
+                    f"  [{name}] 完成 {counts[name]} 筆"
+                )
             except Exception as e:
                 logging.error(f"  [{name}] 失敗：{e}")
                 counts[name] = 0
 
-    # Step 5：守衛確認 price_volume 有資料
+    # Step 5：確認 price_volume 有資料
     if counts.get("price_volume", 0) == 0:
-        logging.error("price_volume=0 筆，可能未開市，中止分析")
-        sys.exit(1)
+        from db import query
+        check = query(
+            "SELECT COUNT(*) as cnt "
+            "FROM daily_price WHERE volume>0"
+        )
+        total = int(check["cnt"].iloc[0]) \
+                if not check.empty else 0
+        if total == 0:
+            logging.error(
+                "DB 完全無資料，"
+                "TWSE 資料可能尚未更新（請等下午4點後執行），"
+                "中止分析"
+            )
+            sys.exit(1)
+        logging.warning(
+            f"今日資料未更新，"
+            f"使用 DB 現有 {total} 筆資料繼續分析"
+        )
 
     # Step 6：五維 + RF 分析引擎
     from engine.scorer import run_analysis_engine
@@ -96,12 +134,14 @@ def main():
     if mode == "accumulating":
         logging.info(
             f"資料累積期（第 {days} 天），"
-            f"不輸出推薦，明日繼續累積"
+            f"不輸出推薦"
         )
         Path("reports/index.html").write_text(
             build_accumulating_page(days),
             encoding="utf-8"
         )
+        # 累積期也寄通知信
+        send_accumulating_email(days)
         sys.exit(0)
 
     # Step 7：回寫 Excel
@@ -116,7 +156,7 @@ def main():
 
 
 def build_accumulating_page(days: int) -> str:
-    """資料累積期的佔位網頁"""
+    pct = min(int(days / 5 * 100), 100)
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -131,35 +171,92 @@ def build_accumulating_page(days: int) -> str:
   .card{{background:#fff;border-radius:16px;
          padding:48px 40px;text-align:center;
          box-shadow:0 4px 20px rgba(0,0,0,.08);
-         max-width:480px}}
-  h1{{color:#1F3864;font-size:22px;margin-bottom:12px}}
+         max-width:480px;width:90%}}
+  h1{{color:#1F3864;font-size:22px;margin-bottom:8px}}
+  p{{color:#666;font-size:14px;line-height:1.6;margin:8px 0}}
   .progress-wrap{{background:#eee;border-radius:8px;
-                  height:12px;margin:24px 0}}
-  .progress-bar{{background:#2E86C1;height:12px;
-                 border-radius:8px;
-                 width:{min(days/5*100, 100):.0f}%}}
-  p{{color:#666;font-size:14px;line-height:1.6}}
+                  height:14px;margin:20px 0}}
+  .progress-bar{{background:#2E86C1;height:14px;
+                 border-radius:8px;width:{pct}%;
+                 transition:width 0.5s}}
   .day-badge{{display:inline-block;background:#EBF5FB;
-              color:#1A5276;font-size:28px;font-weight:700;
-              padding:12px 24px;border-radius:12px;
-              margin:16px 0}}
+              color:#1A5276;font-size:32px;font-weight:700;
+              padding:14px 28px;border-radius:12px;margin:16px 0}}
+  .note{{color:#999;font-size:12px;margin-top:20px}}
 </style>
 </head>
 <body>
 <div class="card">
   <h1>📊 台股智能分析系統</h1>
-  <p>系統正在累積歷史資料<br>累積滿 5 個交易日後自動開始分析</p>
+  <p>系統正在累積歷史資料<br>累積滿 5 個交易日後自動開始推薦</p>
   <div class="day-badge">第 {days} 天 / 5 天</div>
   <div class="progress-wrap">
     <div class="progress-bar"></div>
   </div>
-  <p style="color:#999;font-size:12px">
-    每日 23:30 自動執行，資料持續累積中<br>
-    此頁面每小時自動重新整理
-  </p>
+  <p>資料完整度 {pct}%</p>
+  <p class="note">每日 23:30 自動執行<br>此頁面每小時自動更新</p>
 </div>
 </body>
 </html>"""
+
+
+def send_accumulating_email(days: int):
+    """資料累積期發送進度通知信"""
+    import os, smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    email_user   = os.environ.get("EMAIL_USER","")
+    email_pass   = os.environ.get("EMAIL_PASS","")
+    email_target = os.environ.get("EMAIL_TARGET","")
+
+    if not email_user or not email_pass or not email_target:
+        return
+
+    pct  = min(int(days/5*100), 100)
+    today = datetime.date.today().strftime("%Y/%m/%d")
+
+    html = f"""
+    <div style="font-family:Arial;max-width:500px;margin:0 auto;
+                padding:24px;background:#f5f7fa">
+      <div style="background:#1F3864;color:#fff;padding:20px;
+                  border-radius:10px 10px 0 0;text-align:center">
+        <h2 style="margin:0">📊 台股分析系統｜資料累積中</h2>
+        <p style="margin:6px 0 0;opacity:.8">{today}</p>
+      </div>
+      <div style="background:#fff;padding:24px;
+                  border-radius:0 0 10px 10px;text-align:center">
+        <p style="color:#555;font-size:15px">
+          系統正在累積歷史資料，進度如下：
+        </p>
+        <div style="font-size:48px;font-weight:700;
+                    color:#1A5276;margin:16px 0">
+          第 {days} 天 / 5 天
+        </div>
+        <div style="background:#eee;border-radius:8px;
+                    height:14px;margin:0 20px 16px">
+          <div style="background:#2E86C1;height:14px;
+                      border-radius:8px;width:{pct}%"></div>
+        </div>
+        <p style="color:#888;font-size:13px">
+          累積滿 5 個交易日後自動開始產出十大推薦<br>
+          明日繼續累積，請耐心等待 🙏
+        </p>
+      </div>
+    </div>"""
+
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"📊 台股系統累積進度 第{days}天/5天 {today}"
+        msg["From"]    = email_user
+        msg["To"]      = email_target
+        msg.attach(MIMEText(html, "html", "utf-8"))
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+            s.login(email_user, email_pass)
+            s.send_message(msg)
+        logging.info("[accumulating] 進度通知信已發送")
+    except Exception as e:
+        logging.warning(f"[accumulating] 通知信發送失敗：{e}")
 
 
 if __name__ == "__main__":
