@@ -51,11 +51,15 @@ def load_portfolio_from_excel() -> int:
             continue
 
         try:
-            shares = int(shares)
-            if shares <= 0:
-                raise ValueError
-        except (TypeError, ValueError):
-            errors.append(f"{stock_id} 張數錯誤：{shares}")
+            if shares is None:
+                raise ValueError("張數為空")
+            shares_f = float(str(shares).replace(",",""))
+            if shares_f <= 0:
+                raise ValueError("張數必須大於 0")
+            # 支援整張與零股（小數）
+            shares = shares_f
+        except (TypeError, ValueError) as ve:
+            errors.append(f"{stock_id} 張數錯誤：{shares}（{ve}）")
             continue
 
         if buy_date is not None:
