@@ -112,3 +112,60 @@
 2026-05-26 17:33:32,489 INFO 資料累積期，不輸出推薦
 2026-05-26 17:33:32,489 INFO 資料累積期（第 1 天），不輸出推薦
 2026-05-26 17:33:33,777 INFO [accumulating] 進度通知信已發送
+2026-05-27 05:21:33,018 INFO ==================================================
+2026-05-27 05:21:33,018 INFO 台股智能分析系統 v3.0 啟動
+2026-05-27 05:21:33,389 INFO SQLite 初始化完成
+2026-05-27 05:21:33,389 INFO 台灣現在時間：2026-05-27 05:21:33
+2026-05-27 05:21:33,389 INFO 今天星期三
+2026-05-27 05:21:34,831 INFO [MarketCalendar] 取得 27 個休市日
+2026-05-27 05:21:35,676 INFO 今日 2026-05-27 台股開市，開始執行
+2026-05-27 05:21:35,820 WARNING   [Portfolio] 略過：00922 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,820 WARNING   [Portfolio] 略過：2027 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2308 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2330 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2363 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2406 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2516 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2609 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2610 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2881 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：2886 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：3040 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：5534 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：6443 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：8422 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：5548 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：6407 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：6618 張數錯誤：張（could not convert string to float: '張'）
+2026-05-27 05:21:35,821 WARNING   [Portfolio] 略過：0050 張數錯誤：股（could not convert string to float: '股'）
+2026-05-27 05:21:35,821 WARNING [Portfolio] Excel 無有效庫存資料
+2026-05-27 05:21:35,821 INFO 庫存載入：0 支持倉
+2026-05-27 05:21:35,829 INFO 擷取：當日股價量
+2026-05-27 05:21:35,830 INFO 擷取：三大法人
+2026-05-27 05:21:35,832 INFO 擷取：融資融券
+2026-05-27 05:21:35,833 INFO 擷取：分點進出
+2026-05-27 05:21:36,922 ERROR [institutional] 失敗：Expecting value: line 1 column 1 (char 0)
+2026-05-27 05:21:36,923 INFO 擷取：月營收 / 財報
+2026-05-27 05:21:37,114 INFO [price_volume] 原始欄位：['Date', 'Code', 'Name', 'TradeVolume', 'TradeValue', 'OpeningPrice', 'HighestPrice', 'LowestPrice', 'ClosingPrice', 'Change', 'Transaction']
+2026-05-27 05:21:37,115 INFO [price_volume] 重命名後欄位：['date', 'stock_id', 'stock_name', 'volume', 'TradeValue', 'open', 'high', 'low', 'close', 'Change', 'Transaction']
+2026-05-27 05:21:37,159 INFO [margin] 原始欄位：['股票代號', '股票名稱', '融資買進', '融資賣出', '融資現金償還', '融資前日餘額', '融資今日餘額', '融資限額', '融券買進', '融券賣出', '融券現券償還', '融券前日餘額', '融券今日餘額', '融券限額', '資券互抵', '註記']
+2026-05-27 05:21:37,190 INFO [price_volume] 寫入 969 筆
+2026-05-27 05:21:37,192 INFO 擷取：總經指標
+2026-05-27 05:21:37,192 INFO   [price_volume] 完成 969 筆
+2026-05-27 05:21:37,192 INFO   [institutional] 完成 0 筆
+2026-05-27 05:21:37,195 INFO [margin] 寫入 1269 筆
+2026-05-27 05:21:37,197 INFO 擷取：重大訊息
+2026-05-27 05:21:37,197 INFO   [margin] 完成 1269 筆
+2026-05-27 05:21:37,959 INFO [macro] VIX=17.01 USD/TWD=31.425 SOX=+5.53% NVDA=-0.22%
+2026-05-27 05:21:38,090 INFO [announcements] 寫入 0 筆
+2026-05-27 05:21:38,447 INFO [chip_broker] 寫入 0 筆
+2026-05-27 05:21:38,448 INFO   [chip_broker] 完成 0 筆
+2026-05-27 05:21:42,067 INFO [financials] 共寫入 0 筆
+2026-05-27 05:21:42,068 INFO   [financials] 完成 0 筆
+2026-05-27 05:21:42,068 INFO   [macro] 完成 1 筆
+2026-05-27 05:21:42,068 INFO   [announcements] 完成 0 筆
+2026-05-27 05:21:42,075 INFO 主分析引擎啟動
+2026-05-27 05:21:42,077 INFO [Scorer] 模式=accumulating 資料天數=1 α=1.00 β=0.00
+2026-05-27 05:21:42,077 INFO 資料累積期，不輸出推薦
+2026-05-27 05:21:42,077 INFO 資料累積期（第 1 天），不輸出推薦
+2026-05-27 05:21:43,186 INFO [accumulating] 進度通知信已發送
