@@ -43,57 +43,73 @@ def collect_price_volume() -> int:
         return 0
 
     if not raw or len(raw) == 0:
-        logging.warning("[price_volume] TWSE 回傳空資料，今日未開市或資料未更新")
+        logging.warning(
+            "[price_volume] TWSE 回傳空資料，今日未開市或資料未更新"
+        )
         return 0
 
     df = pd.DataFrame(raw)
     logging.info(f"[price_volume] 原始欄位：{list(df.columns)}")
 
+    # 對應 TWSE 實際回傳欄位（英文版）
     col_map = {
-        "Code":          "stock_id",
-        "Name":          "stock_name",
-        "Date":          "date",
-        "OpeningPrice":  "open",
-        "HighestPrice":  "high",
-        "LowestPrice":   "low",
-        "ClosingPrice":  "close",
-        "TradeVolume":   "volume",
-        "TurnoverRatio": "turnover_rate",
-        "股票代號":       "stock_id",
-        "股票名稱":       "stock_name",
-        "開盤價":         "open",
-        "最高價":         "high",
-        "最低價":         "low",
-        "收盤價":         "close",
-        "成交股數":       "volume",
-        "週轉率":         "turnover_rate",
+        "Code":         "stock_id",
+        "Name":         "stock_name",
+        "Date":         "date",
+        "OpeningPrice": "open",
+        "HighestPrice": "high",
+        "LowestPrice":  "low",
+        "ClosingPrice": "close",
+        "TradeVolume":  "volume",
+        # 部分 API 版本有週轉率，部分沒有
+        "TurnoverRatio":"turnover_rate",
+        # 中文欄位備用
+        "股票代號":      "stock_id",
+        "股票名稱":      "stock_name",
+        "開盤價":        "open",
+        "最高價":        "high",
+        "最低價":        "low",
+        "收盤價":        "close",
+        "成交股數":      "volume",
+        "週轉率":        "turnover_rate",
     }
     df = df.rename(columns={
         k: v for k, v in col_map.items() if k in df.columns
     })
 
+    logging.info(f"[price_volume] 重命名後欄位：{list(df.columns)}")
+
     if "stock_id" not in df.columns:
         logging.error(
-            f"[price_volume] 缺少 stock_id，"
-            f"現有欄位：{list(df.columns)}"
+            f"[price_volume] 找不到 stock_id 欄位，"
+            f"現有：{list(df.columns)}"
         )
         return 0
 
+    # 若沒有 turnover_rate 欄位，補 0
+    if "turnover_rate" not in df.columns:
+        df["turnover_rate"] = 0.0
+
+    # 數值欄位清洗
     for col in ["open","high","low","close","volume","turnover_rate"]:
         if col in df.columns:
             df[col] = (
                 df[col].astype(str)
-                .str.replace(",", "", regex=False)
+                .str.replace(",",  "", regex=False)
                 .str.replace("--", "0", regex=False)
+                .str.replace("X",  "0", regex=False)
                 .pipe(pd.to_numeric, errors="coerce")
                 .fillna(0)
             )
 
+    # 過濾有效普通股 + 有成交量
     from stock_universe import StockUniverseManager
     mgr  = StockUniverseManager()
     mask = (
         df.apply(lambda r: mgr._is_valid_stock(
-            r.get("stock_id",""), r.get("stock_name","")), axis=1)
+            r.get("stock_id",""),
+            r.get("stock_name","")
+        ), axis=1)
         & (df["volume"] > 0)
     )
     df = df[mask].copy()
@@ -104,8 +120,11 @@ def collect_price_volume() -> int:
     else:
         df["date"] = pd.Timestamp.today().strftime("%Y-%m-%d")
 
-    keep = ["stock_id","stock_name","date","open","high",
-            "low","close","volume","turnover_rate","market"]
+    # 只保留 DB Schema 有的欄位（不包含 stock_name）
+    keep = [
+        "stock_id", "date", "open", "high", "low",
+        "close", "volume", "turnover_rate", "market"
+    ]
     df = df[[c for c in keep if c in df.columns]]
 
     if df.empty:
@@ -114,10 +133,20 @@ def collect_price_volume() -> int:
 
     upsert("daily_price", df, pk=["stock_id","date"])
 
-    u = df[["stock_id","stock_name"]].copy()
-    u["market"]      = "TSE"
-    u["update_date"] = pd.Timestamp.today().strftime("%Y-%m-%d")
-    upsert("stock_universe", u, pk=["stock_id"])
+    # 更新 stock_universe（需要 stock_name）
+    raw_df = pd.DataFrame(raw)
+    raw_df = raw_df.rename(columns={
+        "Code": "stock_id", "Name": "stock_name",
+        "股票代號": "stock_id", "股票名稱": "stock_name",
+    })
+    if "stock_id" in raw_df.columns and "stock_name" in raw_df.columns:
+        u = raw_df[["stock_id","stock_name"]].copy()
+        u["market"]      = "TSE"
+        u["update_date"] = pd.Timestamp.today().strftime("%Y-%m-%d")
+        u = u[u.apply(lambda r: mgr._is_valid_stock(
+            r["stock_id"], r["stock_name"]), axis=1)]
+        if not u.empty:
+            upsert("stock_universe", u, pk=["stock_id"])
 
     logging.info(f"[price_volume] 寫入 {len(df)} 筆")
     return len(df)
