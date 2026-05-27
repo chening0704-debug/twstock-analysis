@@ -2,8 +2,6 @@ name: 台股每日自動分析
 
 on:
   schedule:
-    # 台灣時間 23:30 = UTC 15:30（台灣 UTC+8）
-    # 週一到週五執行
     - cron: '30 15 * * 1-5'
   workflow_dispatch:
 
@@ -13,13 +11,13 @@ env:
 jobs:
   analyze:
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - name: 設定時區為台灣
         run: |
           sudo timedatectl set-timezone Asia/Taipei
-          echo "現在台灣時間：$(date '+%Y-%m-%d %H:%M:%S %Z')"
+          echo "台灣時間：$(date '+%Y-%m-%d %H:%M:%S %Z')"
           echo "今天星期：$(date '+%u')"
 
       - name: 取出程式碼
@@ -57,11 +55,12 @@ jobs:
 
       - name: 執行分析
         env:
-          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-          EMAIL_USER:    ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS:    ${{ secrets.EMAIL_PASS }}
-          EMAIL_TARGET:  ${{ secrets.EMAIL_TARGET }}
-          TZ:            Asia/Taipei
+          FINMIND_TOKEN:    ${{ secrets.FINMIND_TOKEN }}
+          EMAIL_USER:       ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS:       ${{ secrets.EMAIL_PASS }}
+          EMAIL_TARGET:     ${{ secrets.EMAIL_TARGET }}
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          TZ:               Asia/Taipei
         run: python main.py
 
       - name: 提交分析結果
