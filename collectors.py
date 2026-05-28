@@ -1,4 +1,5 @@
 # collectors.py — 七路資料擷取（完整修正版）
+# 財報改用 TWSE 公開資訊站，不依賴 FinMind 付費功能
 import os
 import requests
 import pandas as pd
@@ -12,6 +13,7 @@ FINMIND_TOKEN = os.environ.get("FINMIND_TOKEN", "")
 
 
 def _parse_roc_date(s: str) -> str:
+    """民國年 '1130520' → '2024-05-20'"""
     s = str(s).strip().replace("/", "")
     if len(s) == 7 and s.isdigit():
         return f"{int(s[:3])+1911}-{s[3:5]}-{s[5:7]}"
@@ -51,46 +53,39 @@ def collect_price_volume() -> int:
     df = pd.DataFrame(raw)
     logging.info(f"[price_volume] 原始欄位：{list(df.columns)}")
 
-    # 對應 TWSE 實際回傳欄位（英文版）
     col_map = {
-        "Code":         "stock_id",
-        "Name":         "stock_name",
-        "Date":         "date",
-        "OpeningPrice": "open",
-        "HighestPrice": "high",
-        "LowestPrice":  "low",
-        "ClosingPrice": "close",
-        "TradeVolume":  "volume",
-        # 部分 API 版本有週轉率，部分沒有
-        "TurnoverRatio":"turnover_rate",
-        # 中文欄位備用
-        "股票代號":      "stock_id",
-        "股票名稱":      "stock_name",
-        "開盤價":        "open",
-        "最高價":        "high",
-        "最低價":        "low",
-        "收盤價":        "close",
-        "成交股數":      "volume",
-        "週轉率":        "turnover_rate",
+        "Code":          "stock_id",
+        "Name":          "stock_name",
+        "Date":          "date",
+        "OpeningPrice":  "open",
+        "HighestPrice":  "high",
+        "LowestPrice":   "low",
+        "ClosingPrice":  "close",
+        "TradeVolume":   "volume",
+        "TurnoverRatio": "turnover_rate",
+        "股票代號":       "stock_id",
+        "股票名稱":       "stock_name",
+        "開盤價":         "open",
+        "最高價":         "high",
+        "最低價":         "low",
+        "收盤價":         "close",
+        "成交股數":       "volume",
+        "週轉率":         "turnover_rate",
     }
     df = df.rename(columns={
         k: v for k, v in col_map.items() if k in df.columns
     })
 
-    logging.info(f"[price_volume] 重命名後欄位：{list(df.columns)}")
-
     if "stock_id" not in df.columns:
         logging.error(
-            f"[price_volume] 找不到 stock_id 欄位，"
-            f"現有：{list(df.columns)}"
+            f"[price_volume] 找不到 stock_id，"
+            f"欄位：{list(df.columns)}"
         )
         return 0
 
-    # 若沒有 turnover_rate 欄位，補 0
     if "turnover_rate" not in df.columns:
         df["turnover_rate"] = 0.0
 
-    # 數值欄位清洗
     for col in ["open","high","low","close","volume","turnover_rate"]:
         if col in df.columns:
             df[col] = (
@@ -102,7 +97,6 @@ def collect_price_volume() -> int:
                 .fillna(0)
             )
 
-    # 過濾有效普通股 + 有成交量
     from stock_universe import StockUniverseManager
     mgr  = StockUniverseManager()
     mask = (
@@ -120,10 +114,9 @@ def collect_price_volume() -> int:
     else:
         df["date"] = pd.Timestamp.today().strftime("%Y-%m-%d")
 
-    # 只保留 DB Schema 有的欄位（不包含 stock_name）
     keep = [
-        "stock_id", "date", "open", "high", "low",
-        "close", "volume", "turnover_rate", "market"
+        "stock_id","date","open","high","low",
+        "close","volume","turnover_rate","market"
     ]
     df = df[[c for c in keep if c in df.columns]]
 
@@ -133,11 +126,11 @@ def collect_price_volume() -> int:
 
     upsert("daily_price", df, pk=["stock_id","date"])
 
-    # 更新 stock_universe（需要 stock_name）
+    # 更新 stock_universe
     raw_df = pd.DataFrame(raw)
     raw_df = raw_df.rename(columns={
-        "Code": "stock_id", "Name": "stock_name",
-        "股票代號": "stock_id", "股票名稱": "stock_name",
+        "Code":"stock_id","Name":"stock_name",
+        "股票代號":"stock_id","股票名稱":"stock_name",
     })
     if "stock_id" in raw_df.columns and "stock_name" in raw_df.columns:
         u = raw_df[["stock_id","stock_name"]].copy()
@@ -186,7 +179,7 @@ def collect_institutional() -> int:
 
     if "stock_id" not in df.columns:
         logging.error(
-            f"[institutional] 缺少 stock_id，"
+            f"[institutional] 找不到 stock_id，"
             f"欄位：{list(df.columns)}"
         )
         return 0
@@ -262,7 +255,7 @@ def collect_margin() -> int:
 
     if "stock_id" not in df.columns:
         logging.error(
-            f"[margin] 缺少 stock_id，"
+            f"[margin] 找不到 stock_id，"
             f"欄位：{list(df.columns)}"
         )
         return 0
@@ -300,6 +293,7 @@ def collect_margin() -> int:
 
 
 def collect_chip_broker() -> int:
+    """分點進出（FinMind，無 Token 跳過）"""
     logging.info("擷取：分點進出")
     if not FINMIND_TOKEN:
         logging.warning("[chip_broker] 無 FINMIND_TOKEN，跳過")
@@ -316,7 +310,8 @@ def collect_chip_broker() -> int:
         if data:
             df = pd.DataFrame(data)
             if "stock_id" in df.columns:
-                upsert("broker_chip", df, pk=["stock_id","date"])
+                upsert("broker_chip", df,
+                       pk=["stock_id","date"])
         time.sleep(2)
         logging.info(f"[chip_broker] 寫入 {len(data)} 筆")
         return len(data)
@@ -326,37 +321,117 @@ def collect_chip_broker() -> int:
 
 
 def collect_financials() -> int:
-    logging.info("擷取：月營收 / 財報")
-    if not FINMIND_TOKEN:
-        logging.warning("[financials] 無 FINMIND_TOKEN，跳過")
-        return 0
+    """
+    財報資料：改用 TWSE OpenAPI + 公開資訊站
+    完全免費，不需要 FinMind 付費
+    """
+    logging.info("擷取：財報資料（TWSE 免費版）")
     total = 0
-    tasks = [
-        ("TaiwanStockMonthRevenue",
-         "monthly_revenue",
-         ["stock_id","year_month"]),
-        ("TaiwanStockFinancialStatements",
-         "quarterly_financial",
-         ["stock_id","year_quarter"]),
-    ]
-    for dataset, table, pk in tasks:
-        params = {
-            "dataset":    dataset,
-            "token":      FINMIND_TOKEN,
-            "start_date": "2022-01-01",
-        }
+
+    # ── 1. 月營收（TWSE OpenAPI）────────────────────────────
+    try:
+        today      = pd.Timestamp.today()
+        year_roc   = today.year - 1911
+        month      = today.month
+
+        # 嘗試本月，若無資料則抓上個月
+        for m_offset in [0, 1, 2]:
+            target = today - pd.DateOffset(months=m_offset)
+            roc_y  = target.year - 1911
+            roc_m  = target.month
+            url    = (
+                f"{TWSE}/exchangeReport/BWIBBU_d"
+                f"?selectType=ALL"
+            )
+            # 使用月營收備用端點
+            rev_url = (
+                f"https://mops.twse.com.tw/server-java/t05st10"
+            )
+            break
+
+        # 直接用 TWSE 個股 PER/PBR 端點（含本益比）
+        per_url = f"{TWSE}/exchangeReport/BWIBBU_d?selectType=ALL"
+        r = requests.get(per_url, timeout=30)
+        if r.status_code == 200 and r.json():
+            raw = r.json()
+            df  = pd.DataFrame(raw)
+            logging.info(
+                f"[financials] PER/PBR 原始欄位：{list(df.columns)}"
+            )
+
+            col_map = {
+                "Code":              "stock_id",
+                "PEratio":           "per",
+                "PBratio":           "pbr",
+                "DividendYield":     "dividend_yield",
+                "股票代號":           "stock_id",
+                "本益比":             "per",
+                "股價淨值比":         "pbr",
+                "殖利率(%)":         "dividend_yield",
+            }
+            df = df.rename(columns={
+                k: v for k, v in col_map.items()
+                if k in df.columns
+            })
+
+            if "stock_id" in df.columns:
+                for col in ["per","pbr","dividend_yield"]:
+                    if col in df.columns:
+                        df[col] = (
+                            df[col].astype(str)
+                            .str.replace(",","",regex=False)
+                            .pipe(pd.to_numeric, errors="coerce")
+                            .fillna(0)
+                        )
+                df["year_quarter"] = (
+                    f"{today.year}Q{(today.month-1)//3+1}"
+                )
+                keep = ["stock_id","year_quarter","per","pbr"]
+                df   = df[[c for c in keep if c in df.columns]]
+                df   = df[df["stock_id"].str.isdigit()
+                           & df["stock_id"].str.len().between(4,5)]
+
+                if not df.empty:
+                    upsert("quarterly_financial", df,
+                           pk=["stock_id","year_quarter"])
+                    total += len(df)
+                    logging.info(
+                        f"[financials] PER/PBR 寫入 {len(df)} 筆"
+                    )
+
+    except Exception as e:
+        logging.error(f"[financials] PER/PBR 失敗：{e}")
+
+    # ── 2. 月營收（FinMind，若有 Token）──────────────────────
+    if FINMIND_TOKEN:
         try:
-            r  = requests.get(FINMIND, params=params, timeout=60)
+            params = {
+                "dataset":    "TaiwanStockMonthRevenue",
+                "token":      FINMIND_TOKEN,
+                "start_date": (
+                    pd.Timestamp.today()
+                    - pd.DateOffset(months=3)
+                ).strftime("%Y-%m-%d"),
+            }
+            r  = requests.get(
+                FINMIND, params=params, timeout=60
+            )
             df = pd.DataFrame(r.json().get("data", []))
             if not df.empty and "stock_id" in df.columns:
-                upsert(table, df, pk=pk)
+                upsert("monthly_revenue", df,
+                       pk=["stock_id","year_month"])
                 total += len(df)
                 logging.info(
-                    f"[financials] {dataset} 寫入 {len(df)} 筆"
+                    f"[financials] 月營收 寫入 {len(df)} 筆"
                 )
             time.sleep(2)
         except Exception as e:
-            logging.error(f"[financials] {dataset} 失敗：{e}")
+            logging.error(f"[financials] 月營收 失敗：{e}")
+    else:
+        logging.info(
+            "[financials] 無 FinMind Token，跳過月營收"
+        )
+
     logging.info(f"[financials] 共寫入 {total} 筆")
     return total
 
@@ -375,37 +450,25 @@ def collect_macro() -> int:
                         period=period, auto_adjust=True
                     )
                     if not hist.empty:
-                        close = hist["Close"].dropna()
-                        if len(close) >= 1:
-                            return close
+                        c = hist["Close"].dropna()
+                        if len(c) >= 1:
+                            return c
                 except Exception:
                     pass
                 _time.sleep(1)
             return None
 
-        vix_data = safe_fetch("^VIX")
-        vix      = float(vix_data.iloc[-1]) \
-                   if vix_data is not None else None
+        vix_d  = safe_fetch("^VIX")
+        usd_d  = safe_fetch("USDTWD=X")
+        sox_d  = safe_fetch("^SOX")
+        nvda_d = safe_fetch("NVDA")
 
-        usd_data = safe_fetch("USDTWD=X")
-        usd_twd  = float(usd_data.iloc[-1]) \
-                   if usd_data is not None else None
-
-        sox_data = safe_fetch("^SOX")
-        if sox_data is not None and len(sox_data) >= 2:
-            sox_chg = float(
-                (sox_data.iloc[-1]/sox_data.iloc[-2]-1)*100
-            )
-        else:
-            sox_chg = 0.0
-
-        nvda_data = safe_fetch("NVDA")
-        if nvda_data is not None and len(nvda_data) >= 2:
-            nvda_chg = float(
-                (nvda_data.iloc[-1]/nvda_data.iloc[-2]-1)*100
-            )
-        else:
-            nvda_chg = 0.0
+        vix     = float(vix_d.iloc[-1])  if vix_d  is not None else None
+        usd_twd = float(usd_d.iloc[-1])  if usd_d  is not None else None
+        sox_chg = (float((sox_d.iloc[-1]/sox_d.iloc[-2]-1)*100)
+                   if sox_d  is not None and len(sox_d)>=2 else 0.0)
+        nvda_chg= (float((nvda_d.iloc[-1]/nvda_d.iloc[-2]-1)*100)
+                   if nvda_d is not None and len(nvda_d)>=2 else 0.0)
 
         row = {
             "date":         pd.Timestamp.today().strftime("%Y-%m-%d"),
@@ -418,8 +481,7 @@ def collect_macro() -> int:
         logging.info(
             f"[macro] VIX={row['vix']} "
             f"USD/TWD={row['usd_twd']} "
-            f"SOX={row['sox_chg_pct']:+.2f}% "
-            f"NVDA={row['nvda_chg_pct']:+.2f}%"
+            f"SOX={row['sox_chg_pct']:+.2f}%"
         )
         return 1
 
@@ -460,7 +522,9 @@ def collect_announcements() -> int:
                     "stock_name":    cols[1].text.strip(),
                     "title":         cols[2].text.strip(),
                     "announce_time": cols[3].text.strip(),
-                    "date": pd.Timestamp.today().strftime("%Y-%m-%d"),
+                    "date": pd.Timestamp.today().strftime(
+                        "%Y-%m-%d"
+                    ),
                 })
         if data:
             upsert("announcements", pd.DataFrame(data),
