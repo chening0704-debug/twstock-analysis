@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>台股日報 2026/07/16</title>
+
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;background:#F0F4F8;
+         color:#2D3748;line-height:1.6}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    .header{background:linear-gradient(135deg,#1F3864,#2E86C1);
+            color:#fff;padding:28px 32px;border-radius:16px;
+            margin-bottom:24px}
+    .header h1{font-size:24px;margin-bottom:6px}
+    .header .meta{font-size:13px;opacity:.8}
+    .header .stats{display:flex;gap:12px;
+                   margin-top:14px;flex-wrap:wrap}
+    .stat{background:rgba(255,255,255,.15);
+          padding:8px 14px;border-radius:8px;
+          font-size:13px;text-align:center;min-width:80px}
+    .stat b{font-size:18px;display:block;margin-bottom:2px}
+    .sec-title{font-size:18px;font-weight:600;color:#1F3864;
+               border-left:4px solid #2E86C1;
+               padding-left:12px;margin:28px 0 16px}
+    .top10-grid{display:grid;
+                grid-template-columns:repeat(auto-fill,
+                  minmax(320px,1fr));
+                gap:16px;margin-bottom:24px}
+    .scard{background:#fff;border-radius:12px;
+           padding:16px 18px;
+           box-shadow:0 2px 8px rgba(0,0,0,.07);
+           border-top:4px solid #2E86C1}
+    .scard.flying{border-top:4px solid #1D9E75}
+    .scard .rank{font-size:12px;color:#888;margin-bottom:4px}
+    .scard .sname{font-size:17px;font-weight:600;
+                  color:#1F3864;margin-bottom:10px}
+    .srow{display:flex;align-items:center;gap:8px;
+          margin-bottom:5px;font-size:12px}
+    .slbl{width:30px;color:#888}
+    .strk{flex:1;height:6px;background:#EEE;
+          border-radius:3px;overflow:hidden}
+    .sfil{height:6px;border-radius:3px}
+    .snum{width:28px;text-align:right;
+          font-weight:600;color:#444}
+    .cfoot{display:flex;gap:5px;flex-wrap:wrap;
+           margin-top:10px;font-size:11px}
+    .tag{padding:2px 7px;border-radius:10px;font-weight:500}
+    .tg{background:#E8F8F5;color:#196F3D}
+    .tb{background:#EBF5FB;color:#1A5276}
+    .tr{background:#FDEDEC;color:#922B21}
+    .ty{background:#FEF9E7;color:#7D6608}
+    .tfly{background:#E1F5EE;color:#085041}
+    .tchain{background:#EEEDFE;color:#3C3489}
+    .deep-sec{background:#fff;border-radius:16px;
+              padding:24px 28px;margin-bottom:28px;
+              box-shadow:0 2px 12px rgba(0,0,0,.07)}
+    .dhead{display:flex;align-items:center;gap:12px;
+           margin-bottom:20px;padding-bottom:14px;
+           border-bottom:1px solid #EEE;flex-wrap:wrap}
+    .dbadge{background:#1F3864;color:#fff;
+            padding:6px 14px;border-radius:8px;
+            font-size:15px;font-weight:600}
+    .dinfo h2{font-size:18px;color:#1F3864}
+    .dinfo p{font-size:13px;color:#888;margin-top:2px}
+    .dgrid{display:grid;
+           grid-template-columns:repeat(auto-fill,
+             minmax(120px,1fr));
+           gap:8px;margin-top:14px}
+    .ditem{background:#F0F4F8;border-radius:8px;
+           padding:8px;text-align:center}
+    .dlbl{font-size:10px;color:#888;margin-bottom:3px}
+    .dval{font-size:14px;font-weight:600;color:#1F3864}
+    .mgrid{display:grid;
+           grid-template-columns:repeat(auto-fill,
+             minmax(440px,1fr));
+           gap:14px;margin-top:16px}
+    .mcard{background:#F8FAFE;border:1px solid #E8EDF5;
+           border-radius:10px;padding:14px}
+    .mtitle{font-size:13px;font-weight:600;
+            color:#2E86C1;margin-bottom:8px}
+    .mcontent{font-size:12px;color:#444;
+              line-height:1.7;white-space:pre-line}
+    .ptable{width:100%;border-collapse:collapse;
+            background:#fff;border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,.07)}
+    .ptable th{background:#1F3864;color:#fff;
+               padding:10px 12px;text-align:left;
+               font-size:12px}
+    .ptable td{padding:10px 12px;
+               border-bottom:1px solid #F0F4F8;
+               font-size:12px}
+    .ptable tr:hover{background:#F8FAFE}
+    .pp{color:#196F3D;font-weight:600}
+    .pn{color:#922B21;font-weight:600}
+    .accumulate{background:#fff;border-radius:16px;
+                padding:48px 40px;text-align:center;
+                box-shadow:0 4px 20px rgba(0,0,0,.08);
+                max-width:480px;margin:40px auto}
+    .footer{text-align:center;color:#AAA;font-size:12px;
+            margin-top:32px;padding-bottom:20px}
+    @media(max-width:600px){
+      .mgrid{grid-template-columns:1fr}
+      .top10-grid{grid-template-columns:1fr}
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>📊 台股智能分析深度日報 v6</h1>
+    <div class="meta">2026/07/16　含飆股基因 + 自我學習 + 產業鏈分析</div>
+    <div class="stats">
+      <div class="stat">
+        <b>50/100</b>總經
+      </div>
+      <div class="stat">
+        <b>震盪</b>市場
+      </div>
+      <div class="stat">
+        <b>16</b>持倉
+      </div>
+      <div class="stat">
+        <b>0</b>強飆股
+      </div>
+      <div class="stat">
+        <b>0</b>深度報告
+      </div>
+    </div>
+  </div>
+
+  
+    <div style="background:#fff;border-radius:12px;
+                padding:14px 18px;margin-bottom:20px;
+                box-shadow:0 2px 8px rgba(0,0,0,.07)">
+      <div style="font-size:13px;font-weight:500;
+                  color:#1F3864;margin-bottom:8px">
+        🌐 國際AI族群連動
+        <span style="background:#EBF5FB;color:#1A5276;
+                      padding:2px 8px;border-radius:8px;
+                      font-size:12px;margin-left:8px">
+          AI族群中性
+        </span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        <span style="background:#F0F4F8;padding:2px 8px;border-radius:8px;font-size:12px;margin:2px;color:#922B21">NVDA -2.2%</span><span style="background:#F0F4F8;padding:2px 8px;border-radius:8px;font-size:12px;margin:2px;color:#922B21">SMCI -4.7%</span><span style="background:#F0F4F8;padding:2px 8px;border-radius:8px;font-size:12px;margin:2px;color:#922B21">DELL -13.5%</span><span style="background:#F0F4F8;padding:2px 8px;border-radius:8px;font-size:12px;margin:2px;color:#196F3D">META +2.5%</span><span style="background:#F0F4F8;padding:2px 8px;border-radius:8px;font-size:12px;margin:2px;color:#196F3D">MSFT +2.6%</span>
+      </div>
+    </div>
+
+  <div class="sec-title">🏆 十大買入推薦</div>
+  <div class="top10-grid">
+    
+            <div class="scard">
+              <div class="rank">
+                #1
+                
+              </div>
+              <div class="sname">
+                2248
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;45.3分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:25.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">25</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:68.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">68</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲69</span>
+                <span class="tag tr">▼57</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #2
+                
+              </div>
+              <div class="sname">
+                1810
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;44.7分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:30.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">30</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:58.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">58</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲32</span>
+                <span class="tag tr">▼27</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #3
+                
+              </div>
+              <div class="sname">
+                2516
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;42.8分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:20.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">20</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:63.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">63</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲16</span>
+                <span class="tag tr">▼14</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #4
+                
+              </div>
+              <div class="sname">
+                4439
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;41.1分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:25.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">25</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:48.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">48</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲120</span>
+                <span class="tag tr">▼100</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #5
+                
+              </div>
+              <div class="sname">
+                2910
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;40.7分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:13.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">13</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:63.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">63</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲28</span>
+                <span class="tag tr">▼23</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #6
+                
+              </div>
+              <div class="sname">
+                3702
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;40.6分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:20.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">20</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:63.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">63</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:35.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">35</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲134</span>
+                <span class="tag tr">▼111</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #7
+                
+              </div>
+              <div class="sname">
+                1203
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;40.4分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:5.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">5</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:73.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">73</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag ty">⚠️ SELL</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲50</span>
+                <span class="tag tr">▼41</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #8
+                
+              </div>
+              <div class="sname">
+                2923
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;39.8分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:10.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">10</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:63.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">63</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag tr">🚨 CUT</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲35</span>
+                <span class="tag tr">▼29</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #9
+                
+              </div>
+              <div class="sname">
+                1709
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;39.6分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:13.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">13</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:58.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">58</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag tr">🚨 CUT</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲31</span>
+                <span class="tag tr">▼26</span>
+                
+              </div>
+            </div>
+            <div class="scard">
+              <div class="rank">
+                #10
+                
+              </div>
+              <div class="sname">
+                8462
+                <span style="font-size:12px;color:#888;
+                             font-weight:400">
+                  &nbsp;39.2分
+                </span>
+              </div>
+              <div>
+                <div class="srow">
+                  <span class="slbl">基</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:15.0%;background:#2E86C1">
+                    </div>
+                  </div>
+                  <span class="snum">15</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">技</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:53.0%;background:#1D9E75">
+                    </div>
+                  </div>
+                  <span class="snum">53</span>
+                </div>
+                <div class="srow">
+                  <span class="slbl">籌</span>
+                  <div class="strk">
+                    <div class="sfil"
+                      style="width:45.0%;background:#BA7517">
+                    </div>
+                  </div>
+                  <span class="snum">45</span>
+                </div></div>
+              <div class="cfoot">
+                <span class="tag tr">🚨 CUT</span>
+                <span class="tag tb">RF 50%</span>
+                <span class="tag tg">▲187</span>
+                <span class="tag tr">▼155</span>
+                
+              </div>
+            </div>
+  </div>
+
+  <div class="sec-title">🧠 自我學習引擎</div>
+  
+    <div style="background:#fff;border-radius:16px;
+                padding:20px 24px;margin-bottom:28px;
+                box-shadow:0 2px 8px rgba(0,0,0,.07)">
+      <div style="font-size:16px;font-weight:600;
+                  color:#1F3864;margin-bottom:16px;
+                  border-left:4px solid #2E86C1;
+                  padding-left:10px">
+        🧠 自我學習引擎｜昨日驗證 + 今日權重
+      </div>
+      
+        <div style="display:flex;gap:16px;flex-wrap:wrap;
+                    margin-bottom:14px">
+          <div style="background:#F0F4F8;border-radius:8px;
+                      padding:10px 14px;text-align:center">
+            <div style="font-size:11px;color:#888;
+                        margin-bottom:4px">昨日推薦勝率</div>
+            <div style="font-size:22px;font-weight:500;
+                        color:#922B21">
+              0%
+            </div>
+            <div style="font-size:11px;color:#888">
+              0/0 筆命中
+            </div>
+          </div>
+          <div style="flex:1;background:#F0F4F8;
+                      border-radius:8px;padding:10px 14px">
+            <div style="font-size:11px;color:#888;
+                        margin-bottom:6px">回測詳情</div>
+            
+          </div>
+        </div>
+      <div style="font-size:13px;font-weight:500;
+                  color:#1F3864;margin-bottom:10px">
+        當前自適應權重（系統自動調整中）
+      </div>
+      
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">基本面</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:70.0%;height:8px;
+                        background:#2E86C1;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            35.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">技術面</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:50.0%;height:8px;
+                        background:#1D9E75;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            25.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">籌碼面</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:50.0%;height:8px;
+                        background:#BA7517;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            25.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">總經面</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:20.0%;height:8px;
+                        background:#7F77DD;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            10.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">消息面</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:10.0%;height:8px;
+                        background:#D85A30;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            5.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">飆股基因</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:0.0%;height:8px;
+                        background:#085041;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            0.0%
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;
+                    gap:8px;margin-bottom:5px;font-size:12px">
+          <span style="width:70px;color:#666">進階技術</span>
+          <div style="flex:1;height:8px;background:#EEE;
+                      border-radius:4px;overflow:hidden">
+            <div style="width:0.0%;height:8px;
+                        background:#1A5276;border-radius:4px">
+            </div>
+          </div>
+          <span style="width:36px;text-align:right;
+                       font-weight:500;color:#444">
+            0.0%
+          </span>
+        </div>
+      
+    </div>
+
+  <div class="sec-title">🧬 飆股基因分析</div>
+  
+    <div style="margin-bottom:32px">
+      
+    <div style="background:#F8FAFE;border:1px solid #E8EDF5;
+                border-radius:10px;padding:16px 18px;
+                margin-bottom:20px;font-size:13px;
+                color:#444;line-height:1.7">
+      <b style="color:#1F3864;font-size:14px">
+        飆股基因理論說明
+      </b><br>
+      真正的飆股不是「突然暴漲」，而是「<b>安靜很久→突然甦醒</b>」。
+      系統依據5大共同特徵評分（滿分100分）：
+      <span style="background:#E1F5EE;color:#085041;padding:1px 6px;
+                   border-radius:4px;margin:0 3px">
+        橫盤整理20分
+      </span>
+      <span style="background:#FAEEDA;color:#633806;padding:1px 6px;
+                   border-radius:4px;margin:0 3px">
+        爆量紅K25分
+      </span>
+      <span style="background:#EEEDFE;color:#3C3489;padding:1px 6px;
+                   border-radius:4px;margin:0 3px">
+        MACD翻紅20分
+      </span>
+      <span style="background:#EBF5FB;color:#0C447C;padding:1px 6px;
+                   border-radius:4px;margin:0 3px">
+        月線翻揚20分
+      </span>
+      <span style="background:#FDEDEC;color:#791F1F;padding:1px 6px;
+                   border-radius:4px;margin:0 3px">
+        突破前高15分
+      </span>
+      <br>
+      <b style="color:#922B21">
+        ⚠️ 警告：若系統判定為第四階段「全民瘋狂」，
+        代表過熱，切勿追高！
+      </b>
+    </div>
+      
+      
+      
+    <div>
+      <div style="font-size:14px;font-weight:500;
+                  color:#1F3864;margin-bottom:10px">
+        全市場飆股基因掃描（前20名）
+      </div>
+      <table style="width:100%;border-collapse:collapse;
+                    background:#fff;border-radius:12px;
+                    overflow:hidden;
+                    box-shadow:0 2px 8px rgba(0,0,0,.07)">
+        <tr style="background:#1F3864;color:#fff">
+          <th style="padding:10px;text-align:left;
+                      font-size:13px">代號</th>
+          <th style="padding:10px;text-align:left;
+                      font-size:13px">飆股評分</th>
+          <th style="padding:10px;text-align:left;
+                      font-size:13px">等級</th>
+          <th style="padding:10px;text-align:left;
+                      font-size:13px">階段</th>
+          <th style="padding:10px;text-align:left;
+                      font-size:13px">五項分數</th>
+        </tr>
+        <tr><td colspan="5" style="padding:16px;color:#AAA;text-align:center">資料累積中</td></tr>
+      </table>
+    </div>
+    </div>
+
+  <div class="sec-title">🔬 深度研究報告（8大分析模組）</div>
+  <p style="color:#AAA;padding:20px">第6天起自動產出</p>
+
+  <div class="sec-title">💼 庫存操作建議</div>
+  
+    <p style="color:#666;font-size:13px;margin-bottom:10px">
+      持倉總市值：
+      <b style="color:#1F3864">NT$2,309,588</b>
+    </p>
+    <table class="ptable">
+      <tr>
+        <th>持倉</th><th>成本</th><th>現價</th>
+        <th>損益</th><th>評分</th>
+        <th>建議</th><th>說明</th>
+      </tr>
+      
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2516</b>&nbsp;2516
+            
+          </td>
+          <td style="padding:10px 12px">
+            22.9
+          </td>
+          <td style="padding:10px 12px">
+            14.5
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -36.7%
+          </td>
+          <td style="padding:10px 12px">
+            43
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分43分，損益-36.7%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2886</b>&nbsp;2886
+            
+          </td>
+          <td style="padding:10px 12px">
+            0.6
+          </td>
+          <td style="padding:10px 12px">
+            47.0
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +7866.1%
+          </td>
+          <td style="padding:10px 12px">
+            25
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（25分），建議獲利了結，損益+7866.1%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2027</b>&nbsp;2027
+            
+          </td>
+          <td style="padding:10px 12px">
+            40.9
+          </td>
+          <td style="padding:10px 12px">
+            39.1
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -4.3%
+          </td>
+          <td style="padding:10px 12px">
+            24
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分24分，損益-4.3%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2610</b>&nbsp;2610
+            
+          </td>
+          <td style="padding:10px 12px">
+            0.1
+          </td>
+          <td style="padding:10px 12px">
+            20.4
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +20300.0%
+          </td>
+          <td style="padding:10px 12px">
+            23
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（23分），建議獲利了結，損益+20300.0%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2609</b>&nbsp;2609
+            
+          </td>
+          <td style="padding:10px 12px">
+            63.0
+          </td>
+          <td style="padding:10px 12px">
+            48.0
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -23.8%
+          </td>
+          <td style="padding:10px 12px">
+            21
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分21分，損益-23.8%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>5534</b>&nbsp;5534
+            
+          </td>
+          <td style="padding:10px 12px">
+            52.8
+          </td>
+          <td style="padding:10px 12px">
+            79.4
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +50.4%
+          </td>
+          <td style="padding:10px 12px">
+            21
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（21分），建議獲利了結，損益+50.4%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>3040</b>&nbsp;3040
+            
+          </td>
+          <td style="padding:10px 12px">
+            39.8
+          </td>
+          <td style="padding:10px 12px">
+            37.5
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -5.8%
+          </td>
+          <td style="padding:10px 12px">
+            21
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分21分，損益-5.8%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2881</b>&nbsp;2881
+            
+          </td>
+          <td style="padding:10px 12px">
+            84.5
+          </td>
+          <td style="padding:10px 12px">
+            125.0
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +47.9%
+          </td>
+          <td style="padding:10px 12px">
+            21
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（21分），建議獲利了結，損益+47.9%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>00922</b>&nbsp;00922
+            
+          </td>
+          <td style="padding:10px 12px">
+            21.8
+          </td>
+          <td style="padding:10px 12px">
+            39.6
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +82.1%
+          </td>
+          <td style="padding:10px 12px">
+            20
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（20分），建議獲利了結，損益+82.1%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>0050</b>&nbsp;0050
+            
+          </td>
+          <td style="padding:10px 12px">
+            73.0
+          </td>
+          <td style="padding:10px 12px">
+            104.4
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +42.9%
+          </td>
+          <td style="padding:10px 12px">
+            18
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（18分），建議獲利了結，損益+42.9%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>8422</b>&nbsp;8422
+            
+          </td>
+          <td style="padding:10px 12px">
+            29.5
+          </td>
+          <td style="padding:10px 12px">
+            26.1
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -11.7%
+          </td>
+          <td style="padding:10px 12px">
+            18
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分18分，損益-11.7%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2330</b>&nbsp;2330
+            
+          </td>
+          <td style="padding:10px 12px">
+            1455.0
+          </td>
+          <td style="padding:10px 12px">
+            2420.0
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +66.3%
+          </td>
+          <td style="padding:10px 12px">
+            16
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（16分），建議獲利了結，損益+66.3%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>00905</b>&nbsp;00905
+            
+          </td>
+          <td style="padding:10px 12px">
+            13.6
+          </td>
+          <td style="padding:10px 12px">
+            26.8
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +97.4%
+          </td>
+          <td style="padding:10px 12px">
+            16
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（16分），建議獲利了結，損益+97.4%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2363</b>&nbsp;2363
+            
+          </td>
+          <td style="padding:10px 12px">
+            62.9
+          </td>
+          <td style="padding:10px 12px">
+            62.1
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -1.3%
+          </td>
+          <td style="padding:10px 12px">
+            15
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分15分，損益-1.3%，風險控管優先
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2308</b>&nbsp;2308
+            
+          </td>
+          <td style="padding:10px 12px">
+            1330.0
+          </td>
+          <td style="padding:10px 12px">
+            1855.0
+          </td>
+          <td class="pp" style="padding:10px 12px">
+            +39.5%
+          </td>
+          <td style="padding:10px 12px">
+            14
+          </td>
+          <td style="padding:10px 12px">
+            🟠&nbsp;出清
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            評分轉弱（14分），建議獲利了結，損益+39.5%
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 12px">
+            <b>2406</b>&nbsp;2406
+            
+          </td>
+          <td style="padding:10px 12px">
+            36.6
+          </td>
+          <td style="padding:10px 12px">
+            34.9
+          </td>
+          <td class="pn" style="padding:10px 12px">
+            -4.9%
+          </td>
+          <td style="padding:10px 12px">
+            14
+          </td>
+          <td style="padding:10px 12px">
+            🔴&nbsp;停損
+          </td>
+          <td style="padding:10px 12px;font-size:11px;
+                      color:#555">
+            🚨 停損出場！評分14分，損益-4.9%，風險控管優先
+          </td>
+        </tr>
+    </table>
+
+  <div class="footer">
+    ⚠️ 本報告由 AI 輔助產出，僅供參考，
+    不構成投資建議。台股投資有風險，損益自負。<br>
+    每日 23:30 自動更新　v6.0
+  </div>
+
+</div>
+</body>
+</html>
