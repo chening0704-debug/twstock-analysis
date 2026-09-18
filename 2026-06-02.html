@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="3600">
+<title>台股分析系統｜初始化中</title>
+
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;background:#F0F4F8;
+         color:#2D3748;line-height:1.6}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    .header{background:linear-gradient(135deg,#1F3864,#2E86C1);
+            color:#fff;padding:28px 32px;border-radius:16px;
+            margin-bottom:24px}
+    .header h1{font-size:24px;margin-bottom:6px}
+    .header .meta{font-size:13px;opacity:.8}
+    .header .stats{display:flex;gap:16px;
+                   margin-top:14px;flex-wrap:wrap}
+    .stat{background:rgba(255,255,255,.15);padding:8px 16px;
+          border-radius:8px;font-size:13px;text-align:center}
+    .stat b{font-size:20px;display:block;margin-bottom:2px}
+    .sec-title{font-size:18px;font-weight:600;color:#1F3864;
+               border-left:4px solid #2E86C1;padding-left:12px;
+               margin:28px 0 16px}
+    .top10-grid{display:grid;
+                grid-template-columns:repeat(auto-fill,
+                  minmax(320px,1fr));
+                gap:16px;margin-bottom:24px}
+    .scard{background:#fff;border-radius:12px;
+           padding:16px 18px;
+           box-shadow:0 2px 8px rgba(0,0,0,.07);
+           border-top:4px solid #2E86C1}
+    .scard.flying{border-top:4px solid #1D9E75}
+    .scard .rank{font-size:12px;color:#888;margin-bottom:4px}
+    .scard .sname{font-size:17px;font-weight:600;
+                  color:#1F3864;margin-bottom:10px}
+    .srow{display:flex;align-items:center;gap:8px;
+          margin-bottom:5px;font-size:12px}
+    .slbl{width:30px;color:#888}
+    .strk{flex:1;height:6px;background:#EEE;
+          border-radius:3px;overflow:hidden}
+    .sfil{height:6px;border-radius:3px}
+    .snum{width:28px;text-align:right;
+          font-weight:600;color:#444}
+    .cfoot{display:flex;gap:6px;flex-wrap:wrap;
+           margin-top:10px;font-size:12px}
+    .tag{padding:3px 8px;border-radius:12px;font-weight:500}
+    .tg{background:#E8F8F5;color:#196F3D}
+    .tb{background:#EBF5FB;color:#1A5276}
+    .tr{background:#FDEDEC;color:#922B21}
+    .ty{background:#FEF9E7;color:#7D6608}
+    .to{background:#FEF0E7;color:#784212}
+    .tfly{background:#E1F5EE;color:#085041}
+    .deep-sec{background:#fff;border-radius:16px;
+              padding:24px 28px;margin-bottom:28px;
+              box-shadow:0 2px 12px rgba(0,0,0,.07)}
+    .dhead{display:flex;align-items:center;gap:12px;
+           margin-bottom:20px;padding-bottom:14px;
+           border-bottom:1px solid #EEE;flex-wrap:wrap}
+    .dbadge{background:#1F3864;color:#fff;
+            padding:6px 14px;border-radius:8px;
+            font-size:15px;font-weight:600}
+    .dinfo h2{font-size:18px;color:#1F3864}
+    .dinfo p{font-size:13px;color:#888;margin-top:2px}
+    .dgrid{display:grid;
+           grid-template-columns:repeat(auto-fill,
+             minmax(130px,1fr));
+           gap:10px;margin-top:14px}
+    .ditem{background:#F0F4F8;border-radius:8px;
+           padding:10px;text-align:center}
+    .dlbl{font-size:11px;color:#888;margin-bottom:4px}
+    .dval{font-size:16px;font-weight:600;color:#1F3864}
+    .mgrid{display:grid;
+           grid-template-columns:repeat(auto-fill,
+             minmax(460px,1fr));
+           gap:16px;margin-top:18px}
+    .mcard{background:#F8FAFE;border:1px solid #E8EDF5;
+           border-radius:10px;padding:16px}
+    .mtitle{font-size:13px;font-weight:600;color:#2E86C1;
+            margin-bottom:10px}
+    .mcontent{font-size:13px;color:#444;
+              line-height:1.7;white-space:pre-line}
+    .ptable{width:100%;border-collapse:collapse;
+            background:#fff;border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,.07)}
+    .ptable th{background:#1F3864;color:#fff;
+               padding:12px 14px;text-align:left;
+               font-size:13px}
+    .ptable td{padding:11px 14px;
+               border-bottom:1px solid #F0F4F8;
+               font-size:13px}
+    .ptable tr:hover{background:#F8FAFE}
+    .pp{color:#196F3D;font-weight:600}
+    .pn{color:#922B21;font-weight:600}
+    .accumulate{background:#fff;border-radius:16px;
+                padding:48px 40px;text-align:center;
+                box-shadow:0 4px 20px rgba(0,0,0,.08);
+                max-width:480px;margin:40px auto}
+    .accumulate h2{color:#1F3864;font-size:22px;
+                   margin-bottom:12px}
+    .progress-wrap{background:#eee;border-radius:8px;
+                   height:12px;margin:20px 0}
+    .progress-bar{background:#2E86C1;height:12px;
+                  border-radius:8px}
+    .day-badge{display:inline-block;background:#EBF5FB;
+               color:#1A5276;font-size:32px;font-weight:700;
+               padding:14px 28px;border-radius:12px;
+               margin:16px 0}
+    .footer{text-align:center;color:#AAA;font-size:12px;
+            margin-top:32px;padding-bottom:20px}
+    @media(max-width:600px){
+      .mgrid{grid-template-columns:1fr}
+      .top10-grid{grid-template-columns:1fr}
+    }
+    </style>
+    
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 台股智能分析系統</h1>
+    <div class="meta">2026/06/02</div>
+  </div>
+  <div class="accumulate">
+    <h2>系統正在累積歷史資料</h2>
+    <p>累積滿 5 個交易日後自動開始推薦</p>
+    <div class="day-badge">第 4 天 / 5 天</div>
+    <div class="progress-wrap">
+      <div class="progress-bar" style="width:80%"></div>
+    </div>
+    <p style="color:#888;font-size:13px">
+      資料完整度 80%<br>
+      每日 23:30 自動執行，此頁面每小時更新
+    </p>
+  </div>
+</div>
+</body>
+</html>
