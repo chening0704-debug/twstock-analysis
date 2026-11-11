@@ -14817,3 +14817,119 @@
 =======================================================
 2026-11-11 05:22:06,986 INFO 全部完成！v6.0
 2026-11-11 05:22:06,986 INFO =======================================================
+2026-11-12 06:04:58,930 INFO =======================================================
+2026-11-12 06:04:58,930 INFO 台股智能分析系統 v6.0 啟動（飆股基因 + 自我學習 + 產業鏈）
+2026-11-12 06:04:59,093 INFO SQLite 初始化完成
+2026-11-12 06:04:59,093 INFO 台灣現在時間：2026-11-12 06:04:59
+2026-11-12 06:04:59,093 INFO 今天星期四
+2026-11-12 06:05:00,796 INFO [MarketCalendar] 取得 27 個休市日
+2026-11-12 06:05:01,505 INFO 今日 2026-11-12 台股開市，開始執行
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 00905 成本=13.59 數量=2張 = 2.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 00922 成本=21.77 數量=1張 = 1.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2027 成本=40.85 數量=2張 = 2.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2308 成本=1330.0 數量=36股 = 0.0360張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2330 成本=1455.0 數量=50股 = 0.0500張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2363 成本=62.9 數量=3張 = 3.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2406 成本=36.65 數量=1張 = 1.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2516 成本=22.9 數量=1張 = 1.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2609 成本=63.0 數量=460股 = 0.4600張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2610 成本=0.1 數量=1315股 = 1.3150張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2881 成本=84.5 數量=1035股 = 1.0350張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 2886 成本=0.59 數量=20張 = 20.0000張
+2026-11-12 06:05:01,656 INFO [Portfolio] 載入 3040 成本=39.8 數量=1張 = 1.0000張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 5534 成本=52.8 數量=1693股 = 1.6930張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 6443 成本=42.7 數量=1張 = 1.0000張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 8422 成本=29.5 數量=3張 = 3.0000張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 5548 成本=26.5 數量=319股 = 0.3190張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 6407 成本=30.9 數量=1張 = 1.0000張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 6618 成本=26.5 數量=1張 = 1.0000張
+2026-11-12 06:05:01,657 INFO [Portfolio] 載入 0050 成本=73.05 數量=3317股 = 3.3170張
+2026-11-12 06:05:01,657 WARNING   [Portfolio] 略過：代號格式錯誤：最後更新
+2026-11-12 06:05:01,667 INFO [Portfolio] 成功載入 20 支持倉，略過 1 筆錯誤
+2026-11-12 06:05:01,667 INFO 庫存載入：20 支持倉
+2026-11-12 06:05:01,691 INFO 擷取：當日股價量
+2026-11-12 06:05:01,691 INFO 擷取：三大法人
+2026-11-12 06:05:01,692 INFO 擷取：融資融券
+2026-11-12 06:05:01,696 INFO 擷取：分點進出
+2026-11-12 06:05:02,566 ERROR [institutional] 失敗：Expecting value: line 1 column 1 (char 0)
+2026-11-12 06:05:02,567 INFO 擷取：財報資料（TWSE 免費版）
+2026-11-12 06:05:02,705 INFO [margin] 原始欄位：['股票代號', '股票名稱', '融資買進', '融資賣出', '融資現金償還', '融資前日餘額', '融資今日餘額', '融資限額', '融券買進', '融券賣出', '融券現券償還', '融券前日餘額', '融券今日餘額', '融券限額', '資券互抵', '註記']
+2026-11-12 06:05:02,719 INFO [margin] 寫入 1309 筆
+2026-11-12 06:05:02,720 INFO 擷取：總經指標
+2026-11-12 06:05:02,730 INFO [price_volume] 原始欄位：['Date', 'Code', 'Name', 'TradeVolume', 'TradeValue', 'OpeningPrice', 'HighestPrice', 'LowestPrice', 'ClosingPrice', 'Change', 'Transaction']
+2026-11-12 06:05:02,834 INFO [price_volume] 寫入 977 筆
+2026-11-12 06:05:02,836 INFO 擷取：重大訊息
+2026-11-12 06:05:02,836 INFO   [price_volume] 完成 977 筆
+2026-11-12 06:05:02,836 INFO   [institutional] 完成 0 筆
+2026-11-12 06:05:02,836 INFO   [margin] 完成 1309 筆
+2026-11-12 06:05:03,761 INFO [announcements] 寫入 0 筆
+2026-11-12 06:05:04,185 INFO [chip_broker] 寫入 0 筆
+2026-11-12 06:05:04,187 INFO   [chip_broker] 完成 0 筆
+2026-11-12 06:05:04,322 INFO [financials] PER/PBR 原始欄位：['Date', 'Code', 'Name', 'ClosePrice', 'DividendYield', 'DividendYear', 'PEratio', 'PBratio', 'FiscalYearQuarter']
+2026-11-12 06:05:04,335 INFO [financials] PER/PBR 寫入 1087 筆
+2026-11-12 06:05:04,872 INFO [macro] VIX=17.49 USD/TWD=32.869 SOX=+5.66%
+2026-11-12 06:05:06,823 INFO [financials] 共寫入 1087 筆
+2026-11-12 06:05:06,825 INFO   [financials] 完成 1087 筆
+2026-11-12 06:05:06,825 INFO   [macro] 完成 1 筆
+2026-11-12 06:05:06,825 INFO   [announcements] 完成 0 筆
+2026-11-12 06:05:06,825 INFO 啟動主分析引擎 v6（五維 + 飆股基因 + 進階技術 + 產業鏈 + 自我學習）
+2026-11-12 06:05:06,843 INFO 主分析引擎 v6 啟動
+2026-11-12 06:05:06,856 INFO [Scorer] 模式=full 天數=81 α=0.60 β=0.40
+2026-11-12 06:05:06,856 INFO [Scorer] 自適應權重：{'fundamental': 0.35, 'technical': 0.25, 'chip': 0.25, 'macro': 0.1, 'news': 0.05, 'flying': 0.0, 'advanced': 0.0}
+2026-11-12 06:05:06,858 INFO 今日有效個股：977 支
+2026-11-12 06:05:06,860 INFO 取得國際連動與 Fed 週期資料...
+2026-11-12 06:05:11,928 INFO [IndustryChain] 國際AI連動：AI族群偏多 多:5 空:2
+2026-11-12 06:05:11,930 INFO 國際AI情緒：AI族群偏多 Fed分數：0.0
+2026-11-12 06:05:14,623 WARNING [FlyingStock] 1341 計算失敗：float division by zero
+2026-11-12 06:05:14,795 WARNING [FlyingStock] 1423 計算失敗：float division by zero
+2026-11-12 06:05:14,841 WARNING [FlyingStock] 1435 計算失敗：float division by zero
+2026-11-12 06:05:14,934 WARNING [FlyingStock] 1441 計算失敗：float division by zero
+2026-11-12 06:05:15,159 INFO   進度 200/977
+2026-11-12 06:05:15,620 WARNING [FlyingStock] 1525 計算失敗：float division by zero
+2026-11-12 06:05:15,805 WARNING [FlyingStock] 1538 計算失敗：float division by zero
+2026-11-12 06:05:15,944 WARNING [FlyingStock] 1583 計算失敗：float division by zero
+2026-11-12 06:05:18,114 WARNING [FlyingStock] 2321 計算失敗：float division by zero
+2026-11-12 06:05:18,294 INFO   進度 400/977
+2026-11-12 06:05:21,456 INFO   進度 600/977
+2026-11-12 06:05:21,778 WARNING [FlyingStock] 2939 計算失敗：float division by zero
+2026-11-12 06:05:22,013 WARNING [FlyingStock] 3018 計算失敗：float division by zero
+2026-11-12 06:05:23,165 WARNING [FlyingStock] 3432 計算失敗：float division by zero
+2026-11-12 06:05:23,569 WARNING [FlyingStock] 3593 計算失敗：float division by zero
+2026-11-12 06:05:24,596 INFO   進度 800/977
+2026-11-12 06:05:24,607 WARNING [FlyingStock] 4581 計算失敗：float division by zero
+2026-11-12 06:05:25,924 WARNING [FlyingStock] 5906 計算失敗：float division by zero
+2026-11-12 06:05:26,094 WARNING [FlyingStock] 7732 計算失敗：float division by zero
+2026-11-12 06:05:27,095 WARNING [FlyingStock] 8443 計算失敗：float division by zero
+2026-11-12 06:05:27,485 INFO [SelfLearning] 開始自我學習流程
+2026-11-12 06:05:27,493 INFO [SelfLearning] 回測完成：勝率=0.0% （0/0）
+2026-11-12 06:05:27,494 INFO [SelfLearning] 歷史資料不足10筆，跳過權重更新
+2026-11-12 06:05:27,497 INFO [SelfLearning] 記錄 10 筆今日預測
+2026-11-12 06:05:27,497 INFO [SelfLearning] 完成｜當前權重：{'fundamental': 0.35, 'technical': 0.25, 'chip': 0.25, 'macro': 0.1, 'news': 0.05, 'flying': 0.0, 'advanced': 0.0}
+2026-11-12 06:05:27,497 INFO 分析完成｜第一名：2618 （48.2分）｜飆股：13支｜自適應權重已更新
+2026-11-12 06:05:27,498 INFO 執行十大推薦深度分析（8大模組 + Gemini AI）...
+2026-11-12 06:05:27,500 ERROR 深度分析失敗：cannot import name 'run_deep_analysis_top10' from 'engine.deep_analysis' (/home/runner/work/twstock-analysis/twstock-analysis/engine/deep_analysis.py)
+2026-11-12 06:05:27,506 INFO HTML 報告已產出
+2026-11-12 06:05:27,542 INFO [Portfolio] 結果回寫完成
+2026-11-12 06:05:28,143 ERROR [notifier] Email 發送失敗：Connection unexpectedly closed
+2026-11-12 06:05:28,144 INFO [notifier] HTML 報告已儲存
+2026-11-12 06:05:28,144 INFO 
+=======================================================
+  今日分析摘要
+=======================================================
+  市場狀態：牛市
+  總經分數：95/100
+  AI情緒：AI族群偏多
+  強力飆股訊號：1 支
+  過熱警告：0 支
+  昨日推薦勝率：0% （0/0）
+  當前自適應權重：
+    fundamental：35.0%
+    technical：25.0%
+    chip：25.0%
+    macro：10.0%
+    news：5.0%
+    flying：0.0%
+    advanced：0.0%
+=======================================================
+2026-11-12 06:05:28,145 INFO 全部完成！v6.0
+2026-11-12 06:05:28,145 INFO =======================================================
